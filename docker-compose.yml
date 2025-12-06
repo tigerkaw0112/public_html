@@ -9,8 +9,10 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Bangkok
-    ports:
-      - "127.0.0.1:${MYSQL_PORT:-8888}:3306" # ✅ Port 8888:3306 (MySQL - Host:Container, MySQL ภายใน container ยังใช้ 3306)
+    # ไม่ต้อง expose port เพราะ PHP และ phpMyAdmin เชื่อมต่อผ่าน Docker network (service name: mysql)
+    # ถ้าต้องการเข้าถึง MySQL จากภายนอก ให้ uncomment บรรทัดล่าง
+    # ports:
+    #   - "127.0.0.1:${MYSQL_PORT:-8888}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       # ถ้ามีไฟล์ init.sql ให้ uncomment บรรทัดล่าง

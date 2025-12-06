@@ -95,9 +95,9 @@ EOF
                         # Force remove any containers with our project names
                         docker rm -f public_html_php public_html_mysql public_html_phpmyadmin 2>/dev/null || true
                         
-                        # Remove any containers using our ports (3000, 8080, 8888)
+                        # Remove any containers using our ports (3000, 8888)
+                        # Note: Port 8080 is for Jenkins, not our containers
                         docker ps --filter "publish=3000" -q | xargs docker rm -f 2>/dev/null || true
-                        docker ps --filter "publish=8080" -q | xargs docker rm -f 2>/dev/null || true
                         docker ps --filter "publish=8888" -q | xargs docker rm -f 2>/dev/null || true
                         
                         # Remove stopped containers
@@ -159,7 +159,7 @@ EOF
                         echo "=== Deployed Services ==="
                         echo "PHP Application (Frontend): http://localhost:3000"
                         echo "phpMyAdmin (Database): http://localhost:8888"
-                        echo "MySQL (Data): localhost:8888"
+                        echo "MySQL (Data): เชื่อมต่อผ่าน Docker network (service name: mysql)"
                         echo "Jenkins: http://localhost:8080"
                     """
                 }
@@ -173,7 +173,7 @@ EOF
             echo "Access your application:"
             echo "  - PHP Application (Frontend): http://localhost:3000"
             echo "  - phpMyAdmin (Database): http://localhost:8888"
-            echo "  - MySQL (Data): localhost:8888"
+            echo "  - MySQL (Data): เชื่อมต่อผ่าน Docker network (service name: mysql)"
             echo "  - Jenkins: http://localhost:8080"
             echo "  - Student Page: http://localhost:3000/student/select_course.php"
             echo "  - Teacher Login: http://localhost:3000/teacher/login.php"
