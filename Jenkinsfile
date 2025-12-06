@@ -62,7 +62,7 @@ MYSQL_DATABASE=4509882_tigerlion
 MYSQL_USER=tigerlion
 MYSQL_PASSWORD=${MYSQL_PASS}
 MYSQL_PORT=8888
-PHPMYADMIN_PORT=8080
+PHPMYADMIN_PORT=8888
 PHP_PORT=3000
 DB_PORT=3306
 EOF
@@ -79,13 +79,33 @@ EOF
                 script {
                     echo "Deploying to production using Docker Compose..."
 
-                    // Stop existing containers
+                    // Stop and remove existing containers (force)
                     def downCommand = 'docker compose down'
                     if (params.CLEAN_VOLUMES) {
                         echo "WARNING: Removing volumes (database will be cleared)"
                         downCommand = 'docker compose down -v'
                     }
-                    sh downCommand
+                    
+                    // Stop containers and remove orphaned containers
+                    sh """
+                        # Stop current project containers
+                        ${downCommand} || true
+                        docker compose down --remove-orphans || true
+                        
+                        # Force remove any containers with our project names
+                        docker rm -f public_html_php public_html_mysql public_html_phpmyadmin 2>/dev/null || true
+                        
+                        # Remove any containers using our ports (3000, 8080, 8888)
+                        docker ps --filter "publish=3000" -q | xargs docker rm -f 2>/dev/null || true
+                        docker ps --filter "publish=8080" -q | xargs docker rm -f 2>/dev/null || true
+                        docker ps --filter "publish=8888" -q | xargs docker rm -f 2>/dev/null || true
+                        
+                        # Remove stopped containers
+                        docker container prune -f || true
+                        
+                        # Wait a moment for ports to be released
+                        sleep 2
+                    """
 
                     // Build and start services
                     sh """
@@ -137,9 +157,10 @@ EOF
 
                         echo ""
                         echo "=== Deployed Services ==="
-                        echo "PHP Application: http://localhost:3000"
-                        echo "phpMyAdmin: http://localhost:8080"
-                        echo "MySQL: localhost:8888"
+                        echo "PHP Application (Frontend): http://localhost:3000"
+                        echo "phpMyAdmin (Database): http://localhost:8888"
+                        echo "MySQL (Data): localhost:8888"
+                        echo "Jenkins: http://localhost:8080"
                     """
                 }
             }
@@ -150,9 +171,10 @@ EOF
         success {
             echo "✅ Deployment completed successfully!"
             echo "Access your application:"
-            echo "  - PHP Application: http://localhost:3000"
-            echo "  - phpMyAdmin: http://localhost:8080"
-            echo "  - MySQL: localhost:8888"
+            echo "  - PHP Application (Frontend): http://localhost:3000"
+            echo "  - phpMyAdmin (Database): http://localhost:8888"
+            echo "  - MySQL (Data): localhost:8888"
+            echo "  - Jenkins: http://localhost:8080"
             echo "  - Student Page: http://localhost:3000/student/select_course.php"
             echo "  - Teacher Login: http://localhost:3000/teacher/login.php"
         }

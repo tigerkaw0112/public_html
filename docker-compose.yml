@@ -10,7 +10,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Bangkok
     ports:
-      - "127.0.0.1:${MYSQL_PORT:-8888}:3306" # ✅ Port 8888:3306 (Host:Container)
+      - "127.0.0.1:${MYSQL_PORT:-8888}:3306" # ✅ Port 8888:3306 (MySQL - Host:Container, MySQL ภายใน container ยังใช้ 3306)
     volumes:
       - mysql_data:/var/lib/mysql
       # ถ้ามีไฟล์ init.sql ให้ uncomment บรรทัดล่าง
@@ -20,17 +20,18 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     # หมายเหตุ: ถ้าใช้ Mac ชิป M1/M2 ให้เปลี่ยน image เป็น: arm64v8/phpmyadmin
+    container_name: public_html_phpmyadmin
     restart: unless-stopped
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
       UPLOAD_LIMIT: 256M
     ports:
-      - "${PHPMYADMIN_PORT:-8080}:8080" # ✅ Port 8080:8080
+      - "${PHPMYADMIN_PORT:-8888}:8888" # ✅ Port 8888:8888 (phpMyAdmin)
     entrypoint: /bin/sh
     command: >
-      -c "sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
-      && sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8080>/' /etc/apache2/sites-available/000-default.conf
+      -c "sed -i 's/Listen 80/Listen 8888/' /etc/apache2/ports.conf
+      && sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8888>/' /etc/apache2/sites-available/000-default.conf
       && /docker-entrypoint.sh apache2-foreground"
     depends_on: [mysql]
     networks: [stack]
