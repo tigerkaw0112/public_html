@@ -1,0 +1,460 @@
+/* css/style.css */
+/* --- Global Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5; /* Light grey background */
+    color: #333; /* Dark grey text */
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 960px; /* Standard width for content area */
+    margin: 25px auto; /* Centered with top/bottom margin */
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+/* --- Page Header / Title (Common across teacher/student pages) --- */
+.page-header {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42); /* Warm orange gradient */
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(255, 107, 53, 0.2);
+    display: flex;
+    flex-direction: column; /* For multiple lines like Course Name and Room */
+    align-items: flex-start; /* Aligns content to the left within header */
+}
+
+.page-header h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin: 0; /* Remove default h2 margin */
+    display: flex;
+    align-items: center;
+}
+.page-header h2 i {
+    margin-right: 12px;
+    font-size: 1.2em;
+}
+
+.page-header h3 { /* Specific for room info in view_bookings, lab_booking */
+    font-size: 1.2em;
+    font-weight: 500;
+    margin: 5px 0 0 0;
+    color: rgba(255, 255, 255, 0.85); /* Lighter text for subtitle */
+}
+
+/* --- Messages (Success/Error banners) --- */
+.message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none; /* Hidden by default, shown by JS */
+    border-left: 4px solid;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95em;
+}
+
+.message i {
+    font-size: 1.1em;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #28a745;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #dc3545;
+}
+
+/* --- Form Groups (Labels and Inputs) --- */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left; /* Default alignment for form elements */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555; /* Darker grey for labels */
+    font-size: 0.95em;
+}
+
+input[type="text"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #ff6b35; /* Orange highlight on focus */
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.25);
+    outline: none;
+}
+
+textarea {
+    min-height: 150px; /* Default height for textareas */
+    resize: vertical;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center; /* Center content (text + icon) */
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.btn-primary {
+    background-color: #ff6b35; /* Orange primary button */
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #e55a2b; /* Darker orange on hover */
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #333; /* Dark grey/black secondary button */
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #555; /* Lighter grey on hover */
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Red danger button */
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Darker red on hover */
+    transform: translateY(-2px);
+}
+
+.btn-sm { /* Smaller buttons for table actions */
+    padding: 8px 12px;
+    font-size: 12px;
+    margin: 2px;
+}
+
+/* --- Horizontal Rule --- */
+hr {
+    border: 0;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 30px 0;
+}
+
+/* --- Section Headers (e.g., "ข้อมูลวิชา", "นักศึกษาที่เข้าเรียน") --- */
+form h3, .section-box h3, .course-list-header {
+    color: #ff6b35; /* Orange for section headers */
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #ff6b35;
+    padding-bottom: 10px;
+}
+form h3 i, .section-box h3 i, .course-list-header i {
+    margin-right: 10px;
+}
+
+/* --- Table Styling (for Dashboard, View Bookings) --- */
+.table-container {
+    overflow-x: auto; /* Allows horizontal scrolling on small screens */
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th {
+    background-color: #333; /* Dark grey/black table headers */
+    color: white;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+th:first-child { border-radius: 8px 0 0 0; }
+th:last-child { border-radius: 0 8px 0 0; }
+
+td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+tr:hover { background-color: #f8f9fa; }
+tr:last-child td { border-bottom: none; }
+
+/* --- Status Badges (for Dashboard) --- */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-visible { background-color: #28a745; color: white; } /* Green */
+.status-hidden { background-color: #6c757d; color: white; } /* Grey */
+
+/* --- No Data / No Courses Message --- */
+.no-data, .no-courses {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+    color: #6c757d;
+}
+
+.no-data i, .no-courses i {
+    font-size: 3em;
+    color: #ff6b35; /* Orange icon */
+    margin-bottom: 15px;
+}
+
+.no-data p, .no-courses p { font-size: 1.1em; }
+
+/* --- Action Buttons (Top of Dashboard/View Bookings) --- */
+.action-buttons-top {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+/* --- Course List (Select Course Page) --- */
+.course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.course-item {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.course-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.course-item h3 {
+    margin-top: 0;
+    color: #0056b3; /* Blue for course titles */
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    border-bottom: none;
+    padding-bottom: 0;
+    line-height: 1.2;
+}
+
+.course-item p {
+    margin: 5px 0;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.course-item p strong { color: #333; }
+
+/* --- Selected Seat Display (lab_booking.php) --- */
+#selectedSeatDisplay {
+    margin-top: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #0056b3; /* Blue text */
+    text-align: center;
+}
+
+/* --- Simple loading state for buttons --- */
+.btn.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* --- Lab Seat Map Styles (Specific to lab_booking.php) --- */
+/* These styles control the overall wrapper and boundary elements */
+.lab-map-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the seat-map and boundary sections horizontally */
+    margin-top: 20px;
+    padding: 15px; /* Padding around the whole map area */
+    border: 1px solid #dcdcdc; /* Border around the whole map area */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.map-boundary {
+    width: 100%;
+    max-width: 590px; /* Adjusted to match max-width of .seat-map for alignment */
+    text-align: center;
+    padding: 10px 0;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #555;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.top-boundary { margin-bottom: 20px; }
+.bottom-boundary { margin-top: 20px; }
+
+.seat-map {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Calculated max-width for widest row: (Left Label 70px) + (Left Block 205px) + (Gap 40px) + (Right Block 205px) + (Right Label 70px) = 590px */
+    max-width: 590px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Internal seat-map styles are kept as-is, as per your request not to modify them.
+   These should already be correctly defined for the layout you desire. */
+.seat-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center; /* Ensures vertical alignment */
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #eee;
+    justify-content: space-between; /* Pushes content to the edges */
+    width: 100%;
+}
+.seat-row:last-child { border-bottom: none; }
+
+.seat-block-left, .seat-block-right {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.seat-gap {
+    width: 40px;
+    flex-shrink: 0;
+}
+
+.row-label {
+    width: 60px;
+    font-weight: bold;
+    color: #0056b3; /* Blue for row labels */
+    flex-shrink: 0;
+    height: 30px; /* Match seat height */
+    line-height: 30px; /* Center text vertically */
+    box-sizing: border-box;
+    margin-bottom: 0;
+}
+
+.row-label-left { text-align: right; padding-right: 10px; }
+.row-label-right { text-align: left; padding-left: 10px; }
+
+.seat {
+    width: 30px; height: 30px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; border-radius: 4px; font-size: 0.8em;
+    transition: background-color 0.2s; flex-shrink: 0;
+}
+.seat.available:hover { background-color: #d4edda; } /* Light green on hover */
+.seat.selected { background-color: #28a745; color: white; } /* Green for selected */
+.seat.booked { background-color: #dc3545; color: white; cursor: not-allowed; } /* Red for booked */
+
+/* --- Responsive adjustments (Combined from all pages) --- */
+@media (max-width: 768px) {
+    body { padding: 15px; }
+    .container { margin: 15px; padding: 15px; border-radius: 0; box-shadow: none; border: none;}
+    .page-header { border-radius: 0; padding: 15px; }
+    .page-header h2 { font-size: 1.5em; }
+    .page-header h3 { font-size: 1em; }
+    
+    form h3 { font-size: 1.3em; }
+    input[type="text"], input[type="password"], textarea, select { padding: 10px; font-size: 0.9em; }
+    .btn { width: 100%; padding: 10px 15px; font-size: 0.9em; }
+    .btn-sm { padding: 6px 8px; font-size: 11px; }
+    .action-buttons-top { flex-direction: column; }
+    
+    .table-container { font-size: 12px; }
+    th, td { padding: 10px 8px; }
+
+    .course-list { grid-template-columns: 1fr; }
+    .course-item { padding: 15px; }
+    .course-item h3 { font-size: 1.2em; }
+    
+    #selectedSeatDisplay { font-size: 1em; }
+
+    /* Lab Map adjustments */
+    .lab-map-wrapper { padding: 10px; border-radius: 0; }
+    .map-boundary { font-size: 0.9em; padding: 8px 0; max-width: 100%; }
+    .seat-map { gap: 10px; max-width: 100%; }
+    .seat { width: 25px; height: 25px; font-size: 0.7em; }
+    .row-label {
+        width: 40px; font-size: 0.75em;
+        line-height: 25px; height: 25px;
+        padding-left: 5px; padding-right: 5px; /* Adjust padding for mobile */
+    }
+    .seat-gap { width: 20px; }
+}

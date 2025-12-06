@@ -1,0 +1,63 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: public_html_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-4509882_tigerlion}  # ✅ แก้เป็นชื่อ DB ของเรา
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Bangkok
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-8888}:3306" # ✅ Port 8888:3306 (Host:Container)
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # ถ้ามีไฟล์ init.sql ให้ uncomment บรรทัดล่าง
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks: [stack]
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    # หมายเหตุ: ถ้าใช้ Mac ชิป M1/M2 ให้เปลี่ยน image เป็น: arm64v8/phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 256M
+    ports:
+      - "${PHPMYADMIN_PORT:-8080}:8080" # ✅ Port 8080:8080
+    entrypoint: /bin/sh
+    command: >
+      -c "sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
+      && sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8080>/' /etc/apache2/sites-available/000-default.conf
+      && /docker-entrypoint.sh apache2-foreground"
+    depends_on: [mysql]
+    networks: [stack]
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: public_html_php
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Bangkok
+      DOCKER_ENV: "true"
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-4509882_tigerlion} # ✅ แก้เป็นชื่อ DB ของเรา
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${PHP_PORT:-3000}:3000" # ✅ Port 3000:3000
+    depends_on: [mysql]
+    networks: [stack]
+
+volumes:
+  mysql_data:
+
+networks:
+  stack:
+    driver: bridge
+
